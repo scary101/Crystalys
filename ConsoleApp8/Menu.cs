@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows;
 
 namespace ConsoleApp8
 {
     static class Menu
     {
-        public static int strela(int minposition, int maxposition, string path)
+        public static int strela(int minposition, int maxposition)
         {
             int poz = minposition;
             ConsoleKeyInfo key = Console.ReadKey();
@@ -41,6 +42,7 @@ namespace ConsoleApp8
                     poz = -1;
                     break;
                 }
+                else if (key.Key == ConsoleKey.F1) { Environment.Exit(0);}
              
                 Console.SetCursorPosition(0, poz);
                 Console.WriteLine(" ->");
@@ -53,7 +55,7 @@ namespace ConsoleApp8
     }
     static class Papka
     {
-        public static void ShowPapka(string path)
+        private static void ShowPapka(string path)
         {
             while(true)
             {
@@ -84,11 +86,18 @@ namespace ConsoleApp8
                     Console.WriteLine(Path.GetExtension(type[i]));
                 }
 
-                int poz = Menu.strela(0, type.Length - 1, path);
+                int poz = Menu.strela(0, type.Length - 1);
                 if (poz == -1)
                 {
-                    string b = Path.GetDirectoryName(path);
-                    ShowPapka(b);
+                    try
+                    {
+                        string b = Path.GetDirectoryName(path);
+                        ShowPapka(b);
+                    }
+                    catch
+                    {
+                        ShowDisk();
+                    }
                 }
                 else
                 {
@@ -106,6 +115,30 @@ namespace ConsoleApp8
                     }
                 }
             }
+        }
+        private static string ShowDisk()
+        {
+            Console.Clear();
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            List<string> strDrive = new List<string>();
+            foreach (DriveInfo drive in drives)
+            {
+                Console.WriteLine("   Имя диска: " + drive.Name + ToGB(drive.AvailableFreeSpace)+ "  ГБ" +  "  Свободно из  " + ToGB(drive.TotalSize) + "  ГБ" );
+                
+                strDrive.Add(drive.Name);
+            }
+            Console.WriteLine("\n   Чтобы зевершить программу нажмите F1");
+            int poz = Menu.strela(0, strDrive.Count - 1);
+            return strDrive[poz];
+        }
+        private static long ToGB(long byteCount)
+        {
+            return byteCount / 1024 / 1024 / 1024;
+        }
+        public static void ShowProvodnik()
+        {
+            string path = ShowDisk();
+            ShowPapka(path);
         }
     }
 

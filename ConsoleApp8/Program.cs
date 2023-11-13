@@ -6,8 +6,7 @@ namespace ConsoleApp8
     {
         static void Main(string[] args)
         {
-            string path = "D:\\";
-            Papka.ShowPapka(path);
+            Papka.ShowProvodnik();
         }
     }
 }
